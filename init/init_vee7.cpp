@@ -37,7 +37,6 @@
 #include "util.h"
 
 void vendor_load_properties() {
-    char device[PROP_VALUE_MAX];
     char bbversion[92];
     FILE *fp;
 
@@ -89,7 +88,7 @@ void vendor_load_properties() {
         property_set("ro.multi.rild", "true");
     };
 
-    property_get("ro.product.device", device);
+    std::string device = property_get("ro.product.device");
     ERROR("Found %s baseband setting build properties for %s device\n", bbversion, device);
     property_set("gsm.version.baseband", "neutrondev");
 }
