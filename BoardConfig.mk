@@ -80,6 +80,8 @@ BOARD_HARDWARE_CLASS := device/lge/vee7/cmhw
 # BT
 BOARD_HAVE_BLUETOOTH := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/lge/vee7/bluetooth
+PRODUCT_PROPERTY_OVERRIDES += \
+    qcom.bluetooth.soc=smd \
 
 # Light
 TARGET_PROVIDES_LIBLIGHT := true
