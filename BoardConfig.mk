@@ -61,6 +61,9 @@ BOARD_USES_LEGACY_MMAP := true
 # Media
 TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
 BOARD_GLOBAL_CFLAGS += -DBOARD_CANT_REALLOCATE_OMX_BUFFERS
+PRODUCT_PROPERTY_OVERRIDES += \
+    media.stagefright.legacyencoder=true \
+    media.stagefright.less-secure=true
 
 # Audio
 BOARD_USES_LEGACY_ALSA_AUDIO := true
@@ -83,6 +86,7 @@ TARGET_PROVIDES_LIBLIGHT := true
 
 # Camera
 USE_DEVICE_SPECIFIC_CAMERA := true
+TARGET_HAS_LEGACY_CAMERA_HAL1 := true
 
 # Enable Minikin text layout engine (will be the default soon)
 USE_MINIKIN := true
