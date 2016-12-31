@@ -89,6 +89,5 @@ void vendor_load_properties() {
     };
 
     std::string device = property_get("ro.product.device");
-    ERROR("Found %s baseband setting build properties for %s device\n", bbversion, device);
-    property_set("gsm.version.baseband", "neutrondev");
+    ERROR("setting build properties for %s device\n", device.c_str());
 }

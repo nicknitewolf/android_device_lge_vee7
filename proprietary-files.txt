@@ -151,4 +151,3 @@ lib/libxml.so
 lib/libxml2.so
 lib/qnet-plugin.so
 lib/libproxyhal.so
-

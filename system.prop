@@ -1,7 +1,35 @@
-##########################
-#   © neutrondev 2016    #
-#<neutrondev03@gmail.com>#
-##########################
+# Display
+debug.composition.type=dyn
+debug.hwc.dynThreshold=1.9
+ro.bq.gpu_to_cpu_unsupported=1
+ro.max.fling_velocity=4000
+ro.opengles.version=131072
+ro.sf.lcd_density=240
+debug.egl.recordable.rgba8888=1
+debug.composition.type=dyn
+debug.hwc.dynThreshold=1.9
+persist.hwc.mdpcomp.enable=false
+debug.mdpcomp.logs=0
+debug.gralloc.map_fb_memory=1
+debug.hwc.fakevsync=1
+
+# LCD Rotation
+ro.sf.hwrotation=180
+
+# Media StageFright
+media.stagefright.enable-player=true
+media.stagefright.enable-meta=false
+media.stagefright.enable-scan=true
+media.stagefright.enable-http=true
+media.stagefright.enable-fma2dp=true
+media.stagefright.enable-aac=true
+media.stagefright.enable-qcp=true
+
+# QCOM
+com.qc.hardware=true
+dev.pm.dyn_sample_period=700000
+dev.pm.dyn_samplingrate=1
+ro.vendor.extension_library=/system/lib/libqc-opt.so
 
 # Radio
 rild.libargs=-d /dev/smd0
@@ -21,42 +49,6 @@ ro.ril.transmitpower=true
 ro.telephony.ril_class=JSRQualcommRIL
 ro.telephony.ril.config=skippinpukcount,qcomdsds,simactivation
 
-# Lcd Rotation
-ro.sf.hwrotation=180
-
-# Display
-debug.composition.type=dyn
-debug.hwc.dynThreshold=1.9
-ro.bq.gpu_to_cpu_unsupported=1
-ro.max.fling_velocity=4000
-ro.opengles.version=131072
-ro.sf.lcd_density=240
-debug.egl.recordable.rgba8888=1
-debug.composition.type=dyn
-debug.hwc.dynThreshold=1.9
-persist.hwc.mdpcomp.enable=false
-debug.mdpcomp.logs=0
-debug.gralloc.map_fb_memory=1
-debug.hwc.fakevsync=1
-
-# QCOM
-com.qc.hardware=true
-dev.pm.dyn_sample_period=700000
-dev.pm.dyn_samplingrate=1
-ro.vendor.extension_library=/system/lib/libqc-opt.so
-
-# WiFi
-wifi.interface=wlan0
-
-# Media StageFright
-media.stagefright.enable-player=true
-media.stagefright.enable-meta=false
-media.stagefright.enable-scan=true
-media.stagefright.enable-http=true
-media.stagefright.enable-fma2dp=true
-media.stagefright.enable-aac=true
-media.stagefright.enable-qcp=true
-
 # Use ART small mode
 dalvik.vm.dex2oat-filter=balanced
 dalvik.vm.dex2oat-flags=--no-watch-dog
@@ -67,3 +59,6 @@ dalvik.vm.dex2oat-Xmx=96m
 dalvik.vm.image-dex2oat-Xms=48m
 dalvik.vm.image-dex2oat-Xmx=48m
 ro.ksm.default=1
+
+# WiFi
+wifi.interface=wlan0
