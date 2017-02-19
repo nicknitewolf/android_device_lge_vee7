@@ -1,7 +1,7 @@
-From 015241cc33e40843064307534eef4cc8b6c22f9a Mon Sep 17 00:00:00 2001
+From 9d328bb5d0e0e92772a431ea113bfe248dd863d6 Mon Sep 17 00:00:00 2001
 From: Jani Lusikka <jani.lusikka@gmail.com>
-Date: Sun, 27 Mar 2016 22:39:10 +0300
-Subject: [PATCH] Fix ownership for files/folders created by
+Date: Tue, 14 Feb 2017 19:49:44 +0800
+Subject: [PATCH] [PATCH] Fix ownership for files/folders created by
  ExternalStorageProvider on ext4/f2fs
 
 By forcing ExternalStorageProvider to use the sdcard FUSE layer for access,
@@ -14,13 +14,13 @@ Change-Id: I2cbb97727ebe5af88a879490732925406a165af5
  1 file changed, 8 insertions(+)
 
 diff --git a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
-index 18335b6..46b73d8 100644
+index 10e5dcc..df96c11 100644
 --- a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
 +++ b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
-@@ -169,6 +169,14 @@ private void updateVolumesLocked() {
-                     root.visiblePath = null;
-                 }
-                 root.path = volume.getInternalPathForUser(userId);
+@@ -214,6 +214,14 @@ public class ExternalStorageProvider extends DocumentsProvider {
+             }
+             root.path = volume.getInternalPathForUser(userId);
+             try {
 +
 +                // Force all ext4/f2fs sdcard acccess through the sdcard FUSE layer to ensure the
 +                // correct permissions for accessing files and directories.
@@ -30,5 +30,8 @@ index 18335b6..46b73d8 100644
 +                }
 +
                  root.docId = getDocIdForFile(root.path);
- 
              } catch (FileNotFoundException e) {
+                 throw new IllegalStateException(e);
+-- 
+2.1.4
+

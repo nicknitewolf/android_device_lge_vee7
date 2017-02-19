@@ -1,0 +1,103 @@
+From b267ee6a247c52f4221cbf68e2534260891885d3 Mon Sep 17 00:00:00 2001
+From: weritos6666 <weritos94@gmail.com>
+Date: Mon, 28 Mar 2016 13:31:05 +0500
+Subject: [PATCH 1/2] legacy: wifi: Add support for WIFI CFG80211
+
+Change-Id: I593cd69082c01b0a69b75ba7bb0dc613dce8f037
+---
+ wifi/Android.mk | 10 ++++++++++
+ wifi/wifi.c     | 36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+)
+
+diff --git a/wifi/Android.mk b/wifi/Android.mk
+index 7610a9e..576d9e5 100644
+--- a/wifi/Android.mk
++++ b/wifi/Android.mk
+@@ -57,6 +57,16 @@ ifdef WIFI_FST_DRIVER_MODULE_NAME
+ LOCAL_CFLAGS += -DWIFI_FST_DRIVER_MODULE_NAME=\"$(WIFI_FST_DRIVER_MODULE_NAME)\"
+ endif
+ 
++ifdef WIFI_CFG80211_MODULE_PATH
++LOCAL_CFLAGS += -DWIFI_CFG80211_MODULE_PATH=\"$(WIFI_CFG80211_MODULE_PATH)\"
++endif
++ifdef WIFI_CFG80211_MODULE_ARG
++LOCAL_CFLAGS += -DWIFI_CFG80211_MODULE_ARG=\"$(WIFI_CFG80211_MODULE_ARG)\"
++endif
++ifdef WIFI_CFG80211_MODULE_NAME
++LOCAL_CFLAGS += -DWIFI_CFG80211_MODULE_NAME=\"$(WIFI_CFG80211_MODULE_NAME)\"
++endif
++
+ LOCAL_SRC_FILES += wifi/wifi.c wifi/wifi_fst.c
+ 
+ ifdef WPA_SUPPLICANT_VERSION
+diff --git a/wifi/wifi.c b/wifi/wifi.c
+index f53b9bc..364a01a 100644
+--- a/wifi/wifi.c
++++ b/wifi/wifi.c
+@@ -135,6 +135,26 @@ static const char EXT_MODULE_ARG[] = "";
+ static const char EXT_MODULE_PATH[] = WIFI_EXT_MODULE_PATH;
+ #endif
+ 
++/*
++ * @neutrondev => this is how LG loads WI-FI on stock Firmware for LII series
++*/
++
++#ifdef WIFI_CFG80211_MODULE_NAME
++static const char CFG80211_MODULE_NAME[] = WIFI_CFG80211_MODULE_NAME;
++#ifdef WIFI_CFG80211_MODULE_ARG
++static const char CFG80211_MODULE_ARG[] = WIFI_CFG80211_MODULE_ARG;
++#else
++static const char CFG80211_MODULE_ARG[] = "";
++#endif
++#endif
++#ifdef WIFI_CFG80211_MODULE_PATH
++static const char CFG80211_MODULE_PATH[] = WIFI_CFG80211_MODULE_PATH;
++#endif
++
++/*
++ * @neutrondev => this is how LG loads WI-FI on stock Firmware for LII series
++*/
++
+ #ifndef WIFI_DRIVER_FW_PATH_PARAM
+ #define WIFI_DRIVER_FW_PATH_PARAM	"/sys/module/wlan/parameters/fwpath"
+ #endif
+@@ -372,6 +392,12 @@ int wifi_load_driver()
+ 
+     property_set(DRIVER_PROP_NAME, "loading");
+ 
++#ifdef WIFI_CFG80211_MODULE_PATH
++    if (insmod(CFG80211_MODULE_PATH, CFG80211_MODULE_ARG) < 0)
++        return -1;
++    usleep(200000);
++#endif
++
+ #ifdef WIFI_EXT_MODULE_PATH
+     if (insmod(EXT_MODULE_PATH, EXT_MODULE_ARG) < 0)
+         return -1;
+@@ -384,6 +410,11 @@ int wifi_load_driver()
+ #ifdef WIFI_EXT_MODULE_NAME
+         rmmod(EXT_MODULE_NAME);
+ #endif
++
++#ifdef WIFI_CFG80211_MODULE_NAME
++        rmmod(CFG80211_MODULE_NAME);
++#endif
++
+         return -1;
+     }
+ 
+@@ -442,6 +473,11 @@ int wifi_unload_driver()
+ #ifdef WIFI_EXT_MODULE_NAME
+             if (rmmod(EXT_MODULE_NAME) == 0)
+ #endif
++
++#ifdef WIFI_CFG80211_MODULE_NAME
++			if (rmmod(CFG80211_MODULE_NAME) == 0)
++#endif
++
+             return 0;
+         }
+         return -1;
+-- 
+2.1.4
+
