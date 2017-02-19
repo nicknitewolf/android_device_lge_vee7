@@ -24,27 +24,30 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-import /init.vee7.usb.rc
+import /init.qcom.usb.rc
 
 on early-init
+
     mount debugfs debugfs /sys/kernel/debug
 
 on init
+
     # Support legacy paths
     symlink /sdcard /mnt/sdcard
     symlink /sdcard /storage/sdcard0
     
 on fs
-    mount_all /fstab.vee7
-    swapon_all /fstab.vee7
 
-# Fix broken Fstab
+    mount_all /fstab.qcom
+    swapon_all /fstab.qcom
+
+    # Fstab
     wait /dev/block/platform/msm_sdcc.3/by-num/p15
     exec /system/bin/e2fsck -fy /dev/block/platform/msm_sdcc.3/by-num/p15
     mount ext4 /dev/block/platform/msm_sdcc.3/by-num/p15 /persist nosuid nodev barrier=1
 
-on boot	
-    
+on boot
+
     chmod 0660 /dev/smd11  
     chown system system /dev/smd11	
     chmod 0777 /dev/input/event0
@@ -104,8 +107,8 @@ on boot
     #For bridgemgr daemon to inform the USB driver of the correct transport
     chown radio radio /sys/class/android_usb/f_rmnet_smd_sdio/transport
 
-#   Define TCP buffer sizes for various networks
-#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+    #   Define TCP buffer sizes for various networks
+    #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
     setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
@@ -118,7 +121,7 @@ on boot
     setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
     setprop net.tcp.buffersize.wifi    524288,2097152,4194304,262144,524288,1048576
 
-# Define TCP delayed ack settings for WiFi & LTE
+    # Define TCP delayed ack settings for WiFi & LTE
     setprop net.tcp.delack.default     1
     setprop net.tcp.delack.wifi        20
     setprop net.tcp.delack.lte         8
@@ -126,8 +129,8 @@ on boot
     setprop net.tcp.usercfg.wifi       1
     setprop net.tcp.usercfg.lte        1
 
-#   Assign TCP buffer thresholds to be ceiling value of technology maximums
-#   Increased technology maximums should be reflected here.
+    #   Assign TCP buffer thresholds to be ceiling value of technology maximums
+    #   Increased technology maximums should be reflected here.
     write /proc/sys/net/core/rmem_max  2097152
     write /proc/sys/net/core/wmem_max  2097152
 
@@ -166,26 +169,17 @@ on boot
 
     chmod 0660 /dev/ttyGS0
     chown system system /dev/ttyGS0
-    
-# LGE_CHANGE_S, youngbae.choi@lge.com, For send sync sysfs
     chown system system /sys/devices/platform/lge_boot_mode/send_sync
     chmod 0764 /sys/devices/platform/lge_boot_mode/send_sync
-# LGE_CHANGE_E, youngbae.choi@lge.com, For send sync sysfs 
 
-#sohyun.nam 
     chown system system /sys/module/lge_emmc_direct_access/parameters/lcd_k_cal
-	chown system system /sys/devices/platform/msm_fb.590593/mdp_kcal
+    chown system system /sys/devices/platform/msm_fb.590593/mdp_kcal
 
-# LGE_START 20121101 seonbeom.lee [Security] porting security code.
     wait /dev/block/mmcblk0p6
     chown root radio /dev/block/mmcblk0p6
     chmod 0770 /dev/block/mmcblk0p6
-# LGE_END 20121101 seonbeom.lee [Security] porting security code.
-# LGE_CHANGE_S : For LCD Cal
-# For LCD Cal khyun.kim@lge.com
-	chown root system /dev/block/mmcblk0p8
-	chmod 0770 /dev/block/mmcblk0p8
-# LGE_CHANGE_E : For LCD Cal
+    chown root system /dev/block/mmcblk0p8
+    chmod 0770 /dev/block/mmcblk0p8
 
     # Set Read Ahead to 1024kb
     write /sys/block/mmcblk0/queue/read_ahead_kb 1024
@@ -193,18 +187,16 @@ on boot
 
 on post-fs
 
-#start camera server as daemon
+#Camera Daemon
 service qcamerasvr /system/bin/mm-qcamera-daemon
-        class late_start
-        user camera
-        group camera system inet audio
+    class late_start
+    user camera
+    group camera system inet audio
 
-# msm specific files that need to be created on /data
 on post-fs-data
 
     mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
-    
-# soung.mungi@lge.com AT/ATS refactoring [START]
+
     chown system system /dev/atcmd-tty0
     chmod 0660 /dev/atcmd-tty0
     chown system system /dev/atcmd-tty1
@@ -213,35 +205,33 @@ on post-fs-data
 
     chmod 0664 /sys/class/leds/lcd-backlight/alc
     chmod 0664 /sys/class/leds/lcd-backlight/brightness
-# soung.mungi@lge.com AT/ATS refactoring [END]
 
-# Wi-fi
+    # Wi-fi
     setprop wifi.interface wlan0
     mkdir /data/misc/wifi 0771 wifi system
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
     symlink /system/etc/firmware/wlan/volans/WCN1314_qcom_cfg.ini /data/misc/wifi/WCN1314_qcom_cfg.ini
-	symlink /system/etc/firmware/wlan/volans/WCN1314_qcom_wlan_nv.bin /data/misc/wifi/WCN1314_qcom_wlan_nv.bin
+    symlink /system/etc/firmware/wlan/volans/WCN1314_qcom_wlan_nv.bin /data/misc/wifi/WCN1314_qcom_wlan_nv.bin
     write /data/misc/wifi/fwpath ""
     chmod 0666 /data/misc/wifi/fwpath
 
-# Lighter
-	chown system camera /sys/devices/platform/i2c-gpio.3/i2c-3/3-0030/brightness_uA
-    chmod 0660          /sys/devices/platform/i2c-gpio.3/i2c-3/3-0030/brightness_uA
+    # Lighter
+    chown system camera /sys/devices/platform/i2c-gpio.3/i2c-3/3-0030/brightness_uA
+    chmod 0660 /sys/devices/platform/i2c-gpio.3/i2c-3/3-0030/brightness_uA
     
-# Let's flash some, shall we -> neutrondev03	
-
-   mkdir /data/misc/rgb 0664 system system
-   chown system system /data/misc/rgb/lp5521_current.dat
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/led_pattern
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/led_blink
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/led_current_index
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/R/brightness
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/G/brightness
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/B/brightness
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/R/led_current
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/G/led_current
-   chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/B/led_current
+    # LED
+    mkdir /data/misc/rgb 0664 system system
+    chown system system /data/misc/rgb/lp5521_current.dat
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/led_pattern
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/led_blink
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/led_current_index
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/R/brightness
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/G/brightness
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/B/brightness
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/R/led_current
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/G/led_current
+    chown system system /sys/devices/platform/i2c-gpio.6/i2c-6/6-0032/leds/B/led_current
 
     # Create directory used by audio subsystem
     mkdir /data/misc/audio 0770 audio audio
@@ -272,11 +262,11 @@ on post-fs-data
     mkdir /data/misc/location/mq 0770 gps gps
     mkdir /data/misc/location/xtwifi 0770 gps gps
     
-	start qcamerasvr
-	stop ril-daemon1
+    start qcamerasvr
+    stop ril-daemon1
     setprop vold.post_fs_data_done 1
- 
-# Sensors
+
+    # Sensors
     chown system system /sys/class/input/input2/range
     chown system system /sys/class/input/input2/bandwidth
     chown system system /sys/class/input/input2/mode
@@ -322,15 +312,14 @@ service sensord /system/bin/sensord
     user root
     class core
     oneshot
-  
-#S -> Radio and socket area
-service_redefine ril-daemon /system/bin/rild
+
+service ril-daemon /system/bin/rild
      class main
      socket rild stream 660 root radio
      socket rild-debug stream 660 radio system
      user root
      group radio cache inet misc audio log qcom_diag qcom_oncrpc
- 
+
 service ril-daemon1 /system/bin/rild -c 1
      class main
      socket rild2 stream 660 root radio
@@ -341,18 +330,15 @@ service ril-daemon1 /system/bin/rild -c 1
 
 on property:ro.multi.rild=true
 	start ril-daemon1
-        
+
 service qmuxd /system/bin/qmuxd
     class main
     user radio
     group radio audio bluetooth gps qcom_diag
-    
+
 service netmgrd /system/bin/netmgrd
    class main
- 
-#E -> Radio and socket area
 
-# S -> Wi-fi area    
 service p2p_supplicant /system/bin/wpa_supplicant \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \
     -I/system/etc/wifi/p2p_supplicant_overlay.conf -N \
@@ -383,43 +369,40 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     disabled
     oneshot
 
-# E -> Wi-fi area 
-
 service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
     class late_start
     user root
     disabled
     oneshot
-    
+
 on property:sys.boot_completed=1
     start qcom-post-boot
-    
+
 service system-rw /system/bin/sh /system-rw.sh
     class late_start
     user root
     disabled
     oneshot
-    
+
 on property:sys.boot_completed=1
 	start system-rw
-	
+
 on property:ro.data.large_tcp_window_size=true
     # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
     write /proc/sys/net/ipv4/tcp_adv_win_scale  1
-    
+
 service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
     class late_start
 	user root
-	
+
 service rmt_storage /system/bin/rmt_storage
     class core
-    
+
 service qosmgrd /system/bin/qosmgr /system/etc/qosmgr_rules.xml
     class late_start
     user system
-    group system    
-        
-# S->Charger function -> neutrondev + LG
+    group system
+
 on charger
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/idVendor 1004
@@ -437,4 +420,3 @@ on charger
     write /sys/module/pm2/modes/cpu0/power_collapse/idle_enabled 1
     setprop sys.usb.state $(sys.usb.config)
     exec /sbin/chargerlogo
-# E->Charger function
