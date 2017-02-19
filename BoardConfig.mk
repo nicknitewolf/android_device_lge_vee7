@@ -100,7 +100,6 @@ WITH_DEXPREOPT_BOOT_IMG_ONLY ?= true
 BOARD_ADRENO_DECIDE_TEXTURE_TARGET := true
 USE_OPENGL_RENDERER := true
 TARGET_DISPLAY_USE_RETIRE_FENCE := true
-HWUI_COMPILE_FOR_PERF := true
 
 # Enable Minikin text layout engine (will be the default soon)
 USE_MINIKIN := true
