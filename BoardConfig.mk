@@ -61,7 +61,7 @@ else
 endif
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-eabi-
 TARGET_KERNEL_SOURCE := kernel/lge/msm7x27a
-TARGET_KERNEL_CONFIG := vee7_defconfig
+TARGET_KERNEL_CONFIG := lineageos_vee7_defconfig
 
 # Assert
 TARGET_OTA_ASSERT_DEVICE := vee7,p710,P710
