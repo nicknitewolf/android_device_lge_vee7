@@ -1,0 +1,19 @@
+
+# mount point    fstype  device             [device2]
+
+#
+/imei		emmc	/dev/block/mmcblk0p5   flags=backup=1;display="IMEI"
+/mpt            ext4	/dev/block/mmcblk0p23  flags=backup=1;display="MPT"
+/persist-lg     ext4	/dev/block/mmcblk0p18  flags=backup=1;display="Persist-LG"
+
+/system		ext4	/dev/block/mmcblk0p14  flags=backup=1
+/data		ext4	/dev/block/mmcblk0p20  flags=backup=1;length=-16384
+/cache		ext4	/dev/block/mmcblk0p16  flags=backup=1
+/boot		emmc	/dev/block/mmcblk0p9   flags=backup=1
+/recovery	emmc	/dev/block/mmcblk0p17  flags=backup=1
+/cust           ext4	/dev/block/mmcblk0p25  flags=backup=1;display="Cust"
+/misc		emmc	/dev/block/mmcblk0p8   flags=backup=1
+
+# Removable devices
+/sd-ext	        auto	/dev/block/mmcblk1p2   flags=display="Extended Storage";storage;wipeingui
+/sdcard1	vfat	/dev/block/mmcblk1p1   flags=display="MicroSD";storage;wipeingui;removable

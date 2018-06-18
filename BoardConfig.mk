@@ -158,6 +158,17 @@ TARGET_USERIMAGES_USE_EXT4 := true
 # SELinux
 BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
 
+ifeq ($(WITH_TWRP),true)
+TARGET_RECOVERY_DEVICE_DIRS += device/lge/vee7/twrp
+TW_INCLUDE_CRYPTO := true
+TW_NO_REBOOT_BOOTLOADER := true
+TW_THEME := portrait_hdpi
+
+# Debugging
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
+endif
+
 # Wlan
 BOARD_HAS_QCOM_WLAN := true
 BOARD_WLAN_DEVICE := qcwcn
